@@ -105,13 +105,13 @@ export default function Calendar() {
               }}
               modifiersStyles={{
                 selected: {
-                  backgroundColor: '#2573eb', // Blue-600 for consistent color
+                  backgroundColor: '#2573eb',
                   color: 'white',
                   fontWeight: '500',
                   borderRadius: '6px'
                 },
                 today: {
-                  border: '1px solid #d4d4d8', // Zinc-300
+                  border: '1px solid #d4d4d8',
                   borderRadius: '6px'
                 },
                 hasEvent: {

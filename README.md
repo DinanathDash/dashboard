@@ -1,54 +1,90 @@
-# React + TypeScript + Vite
+# Modern React Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A sophisticated dashboard built with React, TypeScript, and Vite, featuring a clean and modern UI with comprehensive analytics and management tools.
 
-Currently, two official plugins are available:
+![Dashboard Preview](https://placeholder-for-dashboard-screenshot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- **Interactive Dashboard** - View key metrics, statistics, and performance indicators
+- **Data Visualization** - Charts and graphs powered by Recharts
+- **Task Management** - Add, edit, and track tasks
+- **Calendar View** - Schedule and manage events
+- **Kanban Board** - Visual project management
+- **Tables** - Interactive data tables with MUI X Data Grid
+- **Settings** - Customize your experience
+- **Dark/Light Mode** - Toggle between dark and light themes
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Tech Stack
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- **Framework**: React 19 with TypeScript
+- **Build Tool**: Vite 6
+- **Routing**: React Router 7
+- **Styling**: TailwindCSS 4
+- **UI Components**: 
+  - Radix UI Primitives
+  - Custom-built components
+  - Material UI components
+- **Charts**: Recharts
+- **Forms**: React Hook Form with Zod validation
+- **Drag and Drop**: Hello Pangea DND
+- **Date Handling**: date-fns and React Day Picker
+- **Icons**: Lucide React
+
+## 📦 Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd dashboard
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Build for production:
+   ```bash
+   npm run build
+   ```
+
+## 📋 Project Structure
+
+```
+src/
+  ├── assets/         # Static assets
+  ├── components/     # Reusable UI components
+  │   ├── dashboard/  # Dashboard-specific components
+  │   └── ui/         # UI primitives and base components
+  ├── contexts/       # React context providers
+  ├── layouts/        # Layout components
+  ├── lib/            # Utility functions
+  ├── pages/          # Page components
+  └── types/          # TypeScript type definitions
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🛠️ Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+This project uses ESLint for code linting. Run the linter with:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm run lint
 ```
+
+## 📱 Responsive Design
+
+The dashboard is fully responsive and optimized for desktop, tablet, and mobile devices.
+
+## 🔄 State Management
+
+The application uses React's Context API for state management, with specific contexts for theme handling and other global states.
+
+## 🎨 Theming
+
+The application supports both light and dark modes through a custom theme context provider.

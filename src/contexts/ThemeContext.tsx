@@ -73,7 +73,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     
     // Light/dark mode base colors
     if (mode === 'light') {
-      document.documentElement.style.setProperty('--background', 'hsl(0 0% 99%)');  // Slightly off-white
+      document.documentElement.style.setProperty('--background', 'hsl(0 0% 99%)');
       document.documentElement.style.setProperty('--foreground', 'hsl(0 0% 9%)');
       document.documentElement.style.setProperty('--muted', 'hsl(0 0% 96%)');
       document.documentElement.style.setProperty('--muted-foreground', 'hsl(0 0% 45%)');
@@ -86,7 +86,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       document.documentElement.style.setProperty('--popover', 'hsl(0 0% 100%)');
       document.documentElement.style.setProperty('--popover-foreground', 'hsl(0 0% 9%)');
     } else {
-      document.documentElement.style.setProperty('--background', 'hsl(220 10% 9%)'); // Slightly blue-gray dark
+      document.documentElement.style.setProperty('--background', 'hsl(220 10% 9%)');
       document.documentElement.style.setProperty('--foreground', 'hsl(0 0% 99%)');
       document.documentElement.style.setProperty('--muted', 'hsl(215 10% 15%)');
       document.documentElement.style.setProperty('--muted-foreground', 'hsl(0 0% 65%)');
