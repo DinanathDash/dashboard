@@ -34,17 +34,45 @@ export default function Settings() {
   const [layoutMode, setLayoutMode] = useState('default');
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
-  // Effect to sync selectedColor with theme context
+  // Effect to load saved settings
   useEffect(() => {
+    // Load notification settings from localStorage
+    const savedEmailNotifications = localStorage.getItem('emailNotifications');
+    const savedPushNotifications = localStorage.getItem('pushNotifications');
+    const savedLayoutMode = localStorage.getItem('layoutMode');
+    
+    if (savedEmailNotifications !== null) {
+      setEmailNotifications(savedEmailNotifications === 'true');
+    }
+    
+    if (savedPushNotifications !== null) {
+      setPushNotifications(savedPushNotifications === 'true');
+    }
+    
+    if (savedLayoutMode) {
+      setLayoutMode(savedLayoutMode);
+    }
+    
+    // Sync selectedColor with theme context
     setSelectedColor(color);
   }, [color]);
 
   const handleColorChange = (color: string) => {
+    // Only update the selected color in state, don't apply it yet
     setSelectedColor(color);
-    changeThemeColor(color as any);
   };
 
   const handleSaveSettings = () => {
+    // Save notification settings to localStorage
+    localStorage.setItem('emailNotifications', String(emailNotifications));
+    localStorage.setItem('pushNotifications', String(pushNotifications));
+    localStorage.setItem('layoutMode', layoutMode);
+    
+    // Apply the selected theme color only when saving
+    if (selectedColor !== color) {
+      changeThemeColor(selectedColor as any);
+    }
+    
     setSaveMessage("Settings saved successfully!");
     setTimeout(() => setSaveMessage(null), 3000);
   };
@@ -69,20 +97,26 @@ export default function Settings() {
                 <div className="flex gap-2">
                   <button 
                     onClick={mode === 'dark' ? toggleColorMode : undefined}
+                    style={mode === 'light' ? 
+                      {backgroundColor: themeColors.find(t => t.name === color)?.color || '#2563eb', color: 'white'} : 
+                      {}}
                     className={`px-4 py-2 rounded-md w-24 text-sm font-medium transition-colors
-                      ${mode === 'light' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'}`}
+                      ${mode !== 'light' 
+                      ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600' 
+                      : ''}`}
                     disabled={mode === 'light'}
                   >
                     Light
                   </button>
                   <button 
                     onClick={mode === 'light' ? toggleColorMode : undefined}
+                    style={mode === 'dark' ? 
+                      {backgroundColor: themeColors.find(t => t.name === color)?.color || '#2563eb', color: 'white'} : 
+                      {}}
                     className={`px-4 py-2 rounded-md w-24 text-sm font-medium transition-colors
-                      ${mode === 'dark' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'}`}
+                      ${mode !== 'dark' 
+                      ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600' 
+                      : ''}`}
                     disabled={mode === 'dark'}
                   >
                     Dark
@@ -120,7 +154,8 @@ export default function Settings() {
               <div className="pt-2">
                 <button 
                   onClick={handleSaveSettings}
-                  className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors"
+                  style={{backgroundColor: themeColors.find(t => t.name === selectedColor)?.color || '#2563eb'}}
+                  className="w-full px-4 py-2 text-white font-medium rounded-md hover:opacity-90 transition-colors"
                 >
                   Save Settings
                 </button>
@@ -152,7 +187,7 @@ export default function Settings() {
                     <Switch 
                       checked={emailNotifications}
                       onCheckedChange={setEmailNotifications}
-                      className="data-[state=checked]:bg-blue-600"
+                      style={emailNotifications ? {backgroundColor: themeColors.find(t => t.name === color)?.color || '#2563eb'} : {}}
                     />
                   </div>
                   
@@ -166,7 +201,7 @@ export default function Settings() {
                     <Switch 
                       checked={pushNotifications}
                       onCheckedChange={setPushNotifications}
-                      className="data-[state=checked]:bg-blue-600"
+                      style={pushNotifications ? {backgroundColor: themeColors.find(t => t.name === color)?.color || '#2563eb'} : {}}
                     />
                   </div>
                 </div>
@@ -177,28 +212,37 @@ export default function Settings() {
                 <div className="flex gap-2">
                   <button 
                     onClick={() => setLayoutMode('compact')}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors
-                      ${layoutMode === 'compact' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700'}`}
+                    style={layoutMode === 'compact' ? 
+                      {backgroundColor: themeColors.find(t => t.name === color)?.color || '#2563eb', color: 'white'} : 
+                      {}}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors 
+                      ${layoutMode !== 'compact' 
+                      ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600'
+                      : ''}`}
                   >
                     Compact
                   </button>
                   <button 
                     onClick={() => setLayoutMode('default')}
+                    style={layoutMode === 'default' ? 
+                      {backgroundColor: themeColors.find(t => t.name === color)?.color || '#2563eb', color: 'white'} : 
+                      {}}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors
-                      ${layoutMode === 'default' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700'}`}
+                      ${layoutMode !== 'default' 
+                      ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600'
+                      : ''}`}
                   >
                     Default
                   </button>
                   <button 
                     onClick={() => setLayoutMode('comfortable')}
+                    style={layoutMode === 'comfortable' ? 
+                      {backgroundColor: themeColors.find(t => t.name === color)?.color || '#2563eb', color: 'white'} : 
+                      {}}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors
-                      ${layoutMode === 'comfortable' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700'}`}
+                      ${layoutMode !== 'comfortable' 
+                      ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600'
+                      : ''}`}
                   >
                     Comfortable
                   </button>
@@ -208,7 +252,8 @@ export default function Settings() {
               <div className="pt-2">
                 <button 
                   onClick={handleSaveSettings}
-                  className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors"
+                  style={{backgroundColor: themeColors.find(t => t.name === selectedColor)?.color || '#2563eb'}}
+                  className="w-full px-4 py-2 text-white font-medium rounded-md hover:opacity-90 transition-colors"
                 >
                   Save Preferences
                 </button>

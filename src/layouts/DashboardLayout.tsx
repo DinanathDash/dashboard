@@ -28,7 +28,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export default function DashboardLayout() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const navigate = useNavigate();
-  const { mode, toggleColorMode } = useTheme();
+  const { mode, color, toggleColorMode } = useTheme();
   const currentPath = window.location.pathname;
 
   const menuItems = [
@@ -88,28 +88,25 @@ export default function DashboardLayout() {
                   variant="ghost"
                   className={`w-full justify-start ${isCollapsed ? 'justify-center px-1' : 'px-4'
                     } mb-2 py-3 relative group ${isActive 
-                    ? 'bg-primary/10 dark:bg-primary/20 text-primary font-medium' 
-                    : 'hover:bg-muted text-foreground/90 transition-all duration-200'
+                    ? 'bg-theme-accent text-theme font-medium' 
+                    : 'hover-theme text-foreground/90 transition-all duration-200'
                     }`}
                   onClick={() => navigate(item.path)}
                 >
                   <div className="flex items-center">
                     <span className={`${isActive 
-                      ? 'text-primary' 
-                      : 'text-muted-foreground group-hover:text-primary transition-colors duration-200'}`}>
+                      ? 'text-theme active-nav-item' 
+                      : 'text-muted-foreground group-hover:text-theme transition-colors duration-200'}`}>
                       {item.icon}
                     </span>
                     {!isCollapsed && (
                       <span className={`ml-3 text-[15px] ${isActive 
-                        ? 'font-medium text-primary' 
-                        : 'text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-200'}`}>
+                        ? 'font-medium text-theme active-nav-item' 
+                        : 'text-muted-foreground group-hover:text-theme group-hover:translate-x-0.5 transition-all duration-200'}`}>
                         {item.text}
                       </span>
                     )}
                   </div>
-                  {isActive && (
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[70%] w-1.5 bg-primary rounded-r-full shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
-                  )}
                 </Button>
               );
             })}
@@ -151,7 +148,7 @@ export default function DashboardLayout() {
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/settings')}>
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
                 </DropdownMenuItem>

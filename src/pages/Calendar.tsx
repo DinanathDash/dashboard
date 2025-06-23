@@ -16,6 +16,24 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface Event {
   id: string;
@@ -63,6 +81,8 @@ const getEventTypeInfo = (type: string) => {
 export default function Calendar() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [events, setEvents] = useState<Event[]>(initialEvents);
+  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
+  const [editedEvent, setEditedEvent] = useState<Event | null>(null);
   
   const eventsForSelectedDate = events.filter(
     (event) => date && event.date.toDateString() === date.toDateString()
@@ -76,6 +96,19 @@ export default function Calendar() {
   // Function to delete an event
   const deleteEvent = (id: string) => {
     setEvents(events.filter(e => e.id !== id));
+  };
+
+  // Function to open edit dialog with pre-filled data
+  const openEditDialog = (event: Event) => {
+    setEditedEvent(event);
+    setEditDialogOpen(true);
+  };
+
+  // Function to handle event update
+  const handleUpdateEvent = (updatedEvent: Event) => {
+    setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
+    setEditDialogOpen(false);
+    setEditedEvent(null);
   };
 
   return (
@@ -156,7 +189,14 @@ export default function Calendar() {
                               <span className="font-medium group-hover:text-primary/90 transition-colors">{event.title}</span>
                             </div>
                             <div className="flex gap-2">
-                              <Button variant="outline" size="sm" className="h-8 text-xs px-2.5 hover:bg-muted/70">Edit</Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="h-8 text-xs px-2.5 hover:bg-muted/70"
+                                onClick={() => openEditDialog(event)}
+                              >
+                                Edit
+                              </Button>
                               <Button 
                                 variant="ghost" 
                                 size="sm" 
@@ -196,6 +236,85 @@ export default function Calendar() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Edit Event Dialog */}
+      {editedEvent && (
+        <Dialog open={isEditDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit Event</DialogTitle>
+              <DialogDescription>
+                Modify the event details and save changes
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div>
+                <Label htmlFor="event-title">Event Title</Label>
+                <Input 
+                  id="event-title" 
+                  value={editedEvent.title} 
+                  onChange={(e) => setEditedEvent({ ...editedEvent, title: e.target.value })} 
+                />
+              </div>
+              <div>
+                <Label htmlFor="event-type">Event Type</Label>
+                <Select
+                  value={editedEvent.type}
+                  onValueChange={(value) => setEditedEvent({ ...editedEvent, type: value as 'meeting' | 'deadline' | 'reminder' })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select event type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="meeting">Meeting</SelectItem>
+                    <SelectItem value="deadline">Deadline</SelectItem>
+                    <SelectItem value="reminder">Reminder</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Event Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start text-left font-normal"
+                    >
+                      <span>{format(editedEvent.date, "MMMM d, yyyy")}</span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <CalendarComponent
+                      mode="single"
+                      selected={editedEvent.date}
+                      onSelect={(date) => date && setEditedEvent({ ...editedEvent, date })}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setEditDialogOpen(false);
+                  setEditedEvent(null);
+                }}
+                className="border-gray-300 dark:border-gray-600 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-sm"
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => editedEvent && handleUpdateEvent(editedEvent)} 
+                className="theme-colored shadow-sm font-medium"
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

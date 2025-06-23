@@ -3,6 +3,20 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from '
 type ThemeMode = 'light' | 'dark';
 type ThemeColor = 'blue' | 'green' | 'purple' | 'orange' | 'red';
 
+// Helper function to convert hex colors to RGB format for CSS variables
+function hexToRgb(hex: string): string {
+  // Remove the # if present
+  hex = hex.replace(/^#/, '');
+  
+  // Parse the hex values
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  
+  // Return as CSS RGB format
+  return `${r}, ${g}, ${b}`;
+}
+
 interface ThemeContextType {
   mode: ThemeMode;
   color: ThemeColor;
@@ -68,8 +82,124 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     const colorGradient = themeColors[color].gradient;
     document.documentElement.dataset.colorGradient = colorGradient;
 
-    // Apply theme color using CSS variables
-    document.documentElement.style.setProperty('--primary', themeColors[color].hsl);
+    // Apply theme color using CSS variables for shadcn components
+    const colorHsl = themeColors[color].hsl;
+    
+    // Set the --primary CSS variable which is what shadcn/ui components use
+    document.documentElement.style.setProperty('--primary', colorHsl);
+    
+    // Also set a custom property with the actual hex color for direct access
+    const hexValue = mode === 'light' ? themeColors[color].light : themeColors[color].dark;
+    document.documentElement.style.setProperty('--theme-color', hexValue);
+    document.documentElement.style.setProperty('--theme-color-rgb', hexToRgb(hexValue));
+    
+    // Create a CSS rule to define colors for buttons and other elements throughout the app
+    const style = document.createElement('style');
+    const rgbValue = hexToRgb(hexValue);
+    style.innerHTML = `
+      :root {
+        --current-theme-color: ${hexValue};
+        --current-theme-rgb: ${rgbValue};
+      }
+      
+      /* Base theme colored element */
+      .theme-colored {
+        background-color: ${hexValue} !important;
+        color: white !important;
+      }
+      
+      /* Theme color with opacity variants */
+      .bg-theme-soft {
+        background-color: rgba(${rgbValue}, 0.1) !important;
+      }
+      
+      .bg-theme-hover {
+        background-color: rgba(${rgbValue}, 0.2) !important;
+      }
+      
+      /* Enhanced Button Styling */
+      .btn-primary, 
+      button[data-variant="default"],
+      .data-[state=active]:bg-primary {
+        background-color: ${hexValue} !important;
+        color: white !important;
+      }
+      
+      /* Active navigation elements */
+      .active-nav-item {
+        color: ${hexValue} !important;
+      }
+      
+      /* Border accents */
+      .border-theme {
+        border-color: ${hexValue} !important;
+      }
+      
+      /* Text with theme color */
+      .text-theme {
+        color: ${hexValue} !important;
+      }
+      
+      /* Custom hover effects */
+      .hover-theme:hover {
+        background-color: rgba(${rgbValue}, 0.1) !important;
+        color: ${hexValue} !important;
+      }
+
+      /* Shadows with theme color */
+      .shadow-theme {
+        box-shadow: 0 0 8px rgba(${rgbValue}, 0.5) !important;
+      }
+      
+      /* Accent backgrounds */
+      .bg-theme-accent {
+        background-color: rgba(${rgbValue}, 0.15) !important;
+      }
+      
+      /* Progress bars, sliders & other interactive elements */
+      progress::-webkit-progress-value,
+      .slider-track {
+        background-color: ${hexValue} !important;
+      }
+      
+      /* Selected Tab Styles */
+      [role="tablist"] [data-state="active"] {
+        color: ${hexValue} !important;
+        border-color: ${hexValue} !important;
+      }
+      
+      /* Form focus states */
+      input:focus, textarea:focus, select:focus {
+        border-color: ${hexValue} !important;
+        box-shadow: 0 0 0 2px rgba(${rgbValue}, 0.25) !important;
+      }
+      
+      /* Additional utility classes */
+      .ring-theme {
+        box-shadow: 0 0 0 2px rgba(${rgbValue}, 0.5) !important;
+      }
+      
+      /* Theme colors for different components */
+      .theme-bg-opacity-10 { background-color: rgba(${rgbValue}, 0.1) !important; }
+      .theme-bg-opacity-20 { background-color: rgba(${rgbValue}, 0.2) !important; }
+      .theme-bg-opacity-30 { background-color: rgba(${rgbValue}, 0.3) !important; }
+      .theme-text-light { color: rgba(${rgbValue}, 0.8) !important; }
+      .theme-border-light { border-color: rgba(${rgbValue}, 0.3) !important; }
+      
+      /* Chart colors */
+      .chart-theme-color { stroke: ${hexValue} !important; fill: ${hexValue} !important; }
+      .chart-theme-area { fill: rgba(${rgbValue}, 0.2) !important; }
+    `;
+    
+    // Remove any existing dynamic style
+    const existingStyle = document.getElementById('theme-color-style');
+    if (existingStyle) {
+      existingStyle.remove();
+    }
+    
+    // Add the new style to the head
+    style.id = 'theme-color-style';
+    document.head.appendChild(style);
     
     // Light/dark mode base colors
     if (mode === 'light') {

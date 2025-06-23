@@ -51,7 +51,7 @@ export function AddTaskDialog({ onAddTask }: AddTaskProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-400/20 shadow-sm">Add Task</Button>
+        <Button variant="default" className="theme-colored border border-opacity-20 shadow-sm">Add Task</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -107,7 +107,7 @@ export function AddTaskDialog({ onAddTask }: AddTaskProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" variant="default" className="bg-blue-600 hover:bg-blue-700 text-white">Add Task</Button>
+            <Button type="submit" variant="default" className="theme-colored">Add Task</Button>
           </DialogFooter>
         </form>
       </DialogContent>

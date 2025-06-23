@@ -65,7 +65,7 @@ export function AddEventDialog({ onAddEvent, selectedDate }: AddEventDialogProps
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-400/20 shadow-sm">
+        <Button variant="default" className="theme-colored border border-opacity-20 shadow-sm">
           Add Event
         </Button>
       </DialogTrigger>
@@ -139,7 +139,7 @@ export function AddEventDialog({ onAddEvent, selectedDate }: AddEventDialogProps
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" variant="default" className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button type="submit" variant="default" className="theme-colored">
               Save Event
             </Button>
           </DialogFooter>
